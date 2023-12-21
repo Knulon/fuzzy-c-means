@@ -1,19 +1,13 @@
-import numpy as np
-import pygame 
 import matplotlib.pyplot as plt
 import input
-
-# Eingabe:
-#      Array 1 = [ (x0, y0), (x1, y1), (x2, y2), ... ]         --> Koordinaten
-#      Array 2 = [ 0.6, 0.6, 0.6, ... ]                        --> Cluster-Wahrscheinlichkeiten
-#      Array 3 = [ A0, A1, A2, ... ]                           --> zugehoerige Cluster
-
+   
+"""
+    koords:     [ (x0, y0), (x1, y1), (x2, y2), ... ]         --> Koordinaten
+    wk:         [ 0.6, 0.6, 0.6, ... ]                        --> Cluster-Wahrscheinlichkeiten
+    clusters:   [ A0, A1, A2, ... ]                           --> zugehoerige Cluster
+"""
 
 def makePlot(koords, wk, clusters):
-#     print("Koordinaten: \n", koords, "\n")
-#     print("Cluster: \t", clusters, "\n")
-#     print("Wahrscheinlichkeiten: \t", wk)
-
 
     # Farben fuer Cluster   (20 Farben, ab der 21. wieder oben anfangen)
     colours = [
@@ -43,8 +37,7 @@ def makePlot(koords, wk, clusters):
     ax.set_title("Fuzzy c-Means")
 
     j = 0
-    for i in koords:
-       x, y = i[0], i[1]
+    for x, y in koords:
        c = clusters[j]
        w = wk[j]
        j+=1
@@ -52,6 +45,7 @@ def makePlot(koords, wk, clusters):
        ax.scatter(x,y, c=(colours[c%20], w))
 
     plt.savefig("output_visuals.jpg")
+    # plt.show()
 
 
 if __name__ == '__main__':
