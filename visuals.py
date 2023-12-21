@@ -9,6 +9,11 @@ import input
 
 def makePlot(koords, wk, clusters):
 
+
+    # Skalieren des Alphawertes für den Output von 0.2f bis 1.0f, um die Sichbarkeit sicherzustellen
+    max_val, min_val, max_wk, moritz_wk = 1, 0.2, max(wk), min(wk)
+    scaled_array = [(val - moritz_wk) / (max_wk - moritz_wk) * (max_val - min_val) + min_val for val in wk]
+
     # Farben fuer Cluster   (20 Farben, ab der 21. wieder oben anfangen)
     colours = [
         "#FF0000",          # rot
@@ -39,7 +44,7 @@ def makePlot(koords, wk, clusters):
     j = 0
     for x, y in koords:
        c = clusters[j]
-       w = wk[j]
+       w = scaled_array[j]
        j+=1
 
        ax.scatter(x,y, c=(colours[c%20], w))
