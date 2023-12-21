@@ -26,16 +26,17 @@ def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 
     # https://stackoverflow.com/questions/43644320/how-to-make-numpy-array-column-sum-up-to-1
 
     while np.linalg.norm(u - last_u) > epsilon:
-        print(np.linalg.norm(u - last_u))
+        print("--------------------")
+        # print(np.linalg.norm(u - last_u))
         last_u = u
-        np.zeros_like(last_u)
+        u = np.zeros_like(last_u)
         # calculating v
         for i in range(clusterCount):
             sumUpper = 0
             sumLower = 0
 
             for k in range(n):
-                uikm = u[i][k] ** m
+                uikm = last_u[i][k] ** m
                 sumUpper += uikm * points[k]
                 sumLower += uikm
             v[i] = sumUpper / sumLower
@@ -50,13 +51,10 @@ def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 
                     sum += (dik / metrik(points[k], v[j])) ** (2 / m - 1)
                 u[i][k] = 1 / sum
 
-
-
     # u /= u.sum(axis=1, keepdims=1)
-    #print(u.sum(axis=1, keepdims=1))
+    print(u.sum(axis=1, keepdims=1))
     clusterNr = np.argmax(u, axis=0)
     wahrscheinlichkeiten = np.max(u, axis=0)
-
 
     print(u)
     # return something
@@ -96,7 +94,6 @@ if __name__ == '__main__':
     print(type(wine_data))
     """
     inArr = np.array(
-        [[203, 256], [181, 289], [167, 259], [209, 286], [556, 144], [553, 187], [590, 172], [587, 125], [485, 587],
-         [442, 567],
-         [445, 604], [189, 272], [569, 158], [461, 582]])
-    fuzzyCMeans(inArr, clusterCount=3, m=1.1, epsilon=0.5)
+        [[145, 177], [144, 202], [122, 212], [119, 185], [499, 689], [532, 663], [517, 617], [478, 626], [474, 664],
+         [589, 181], [640, 177], [643, 147], [586, 134], [620, 139], [608, 166], [130, 197], [502, 659], [607, 159]])
+    fuzzyCMeans(inArr, clusterCount=3, m=1.1, epsilon=0.001)
