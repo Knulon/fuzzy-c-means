@@ -1,14 +1,19 @@
 import numpy as np
-from sklearn.datasets import load_wine
+from sklearn.datasets import load_wine,load_iris, load_digits
 import random
 
 
-def visualisieren(points: np.array, clusterNr: np.array, wahrscheinlichkeiten: np.array) -> [str]:
+def npArrToString(arr):
+    return "[" + ",".join([str(i) for i in arr]) + "]"
+
+
+def visualisieren(points: np.array, wahrscheinlichkeiten: np.array, clusterNr: np.array, clusterMittelpunkte: np.array) -> [str]:
     return ["toller/link.png"]
 
 
 def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 for a, b in zip(x, y)])),
-                epsilon=0.0000001, init=None):
+                epsilon=0.0000001, init=None, max_iteration=100):
+    # np.linalg.norm()
     # u matrix
     # v matrix
     n = len(points)
@@ -50,19 +55,25 @@ def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 
                 for j in range(clusterCount):
                     sum += (dik / metrik(points[k], v[j])) ** (2 / m - 1)
                 u[i][k] = 1 / sum
+        iteration += 1
 
+    print(f"Iterationen: {iteration}")
     # u /= u.sum(axis=1, keepdims=1)
     print(u.sum(axis=1, keepdims=1))
     clusterNr = np.argmax(u, axis=0)
     wahrscheinlichkeiten = np.max(u, axis=0)
 
-    print(u)
+    #print(len(clusterNr))
+    #print(npArrToString( clusterNr))
+    print(v)
+    #print(u)
     # return something
     links = visualisieren(points, clusterNr, wahrscheinlichkeiten)
     print("clusternummern:")
     print(clusterNr)
     print("Wahrscheinlichkeiten:")
     print(wahrscheinlichkeiten)
+    """
     return points, clusterNr, links
 
 
@@ -85,15 +96,36 @@ https://de.wikipedia.org/wiki/Fuzzy-c-Means-Algorithmus#cite_note-2
 """
 
 if __name__ == '__main__':
-    """
-    wine_data = load_wine()
 
+    wine_data = load_wine()
+    """
     print(type(wine_data.get('data')))
     print(wine_data.get('data')[0])
 
     print(type(wine_data))
     """
+    different_metrics = {
+        "squared_eucledian": lambda x, y: sum([(a - b) ** 2 for a, b in zip(x, y)]),
+        "eucledian": lambda x, y: sum([(a - b) ** 2 for a, b in zip(x, y)]) ** (1 / 2),
+        "manhattan": lambda x, y: sum([abs(a - b) for a, b in zip(x, y)]),
+        "inverse_eucleadian": lambda x, y: 1 / (sum([(a - b) ** 2 for a, b in zip(x, y)]) ** (1 / 2)),
+        "minkowski": lambda x, y, p: sum([(a - b) ** p for a, b in zip(x, y)]) ** (1 / p)
+    }
+
+    #print(wine_data.get("target_names"))
+    #print(wine_data.get("target"))
+    banknoten = [[float(i) for i in line.split(" ")] for line in open("data.txt").readlines()]
+    # print(banknoten)
+    inData = np.array(banknoten)
+
     inArr = np.array(
-        [[145, 177], [144, 202], [122, 212], [119, 185], [499, 689], [532, 663], [517, 617], [478, 626], [474, 664],
-         [589, 181], [640, 177], [643, 147], [586, 134], [620, 139], [608, 166], [130, 197], [502, 659], [607, 159]])
-    fuzzyCMeans(inArr, clusterCount=3, m=1.1, epsilon=0.001)
+        [[195, 170], [163, 210], [229, 203], [487, 443], [439, 486], [514, 483], [380, 287], [343, 312], [309, 353],
+         [199, 195], [480, 467]])
+    # fuzzyCMeans(inData, clusterCount=2, m=1.1, epsilon=0.01)
+    fuzzyCMeans(inArr, clusterCount=2, m=1.1, epsilon=0.01)
+    # digits = load_digits()
+    # print(npArrToString(digits.get("target")))
+    # fuzzyCMeans(digits.get("data"), clusterCount=10, m=1.1, epsilon=0.01)
+
+
+
