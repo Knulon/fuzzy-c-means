@@ -6,6 +6,7 @@ def makePlots(dataKoords, centerKoords, wk, clusters):
 
     anzDimensionen = len(dataKoords[0])
     koords = []
+    links = []
     i, j = 0, 0
 
     while(i<anzDimensionen):
@@ -13,12 +14,13 @@ def makePlots(dataKoords, centerKoords, wk, clusters):
             if(i!=j):
                 koords = [(k[i], k[j]) for k in dataKoords]
                 centers = [(c[i], c[j]) for c in centerKoords]
-                makePlot(koords, wk, clusters, centers, i, j)
+                links.append(makePlot(koords, wk, clusters, centers, i, j))
                 j+=1
             else:
                 j+=1
         i+=1
-        j=0        
+        j=0
+    return links
 
    
 """
@@ -41,28 +43,28 @@ def makePlot(koords, wk, clusters, centers, dimension1, dimension2):
         else:
             scaled_array = [0.5 for val in wk]
 
-    # Farben fuer Cluster   (20 Farben, ab der 21. wieder oben anfangen)
+    # Farben fuer Cluster   (20 Farben, ab der 21. wieder oben anfangen) NUR MIT DIEEEESEN FARBEN!!!!111!!1!
     colours = [
-        "#FF0000",          # rot
-        "#FFA500",          # orange
-        "#FFFF00",          # gelb
-        "#008000",          # gruen
-        "#00FF00",          # lime
-        "#3CB371",          # medium sea green
-        "#00FFFF",          # cyan
         "#6495ED",          # corn flower blue
+        "#9400D3",          # dark violet
+        "#FFA500",          # orange
+        "#3CB371",          # medium sea green
+        "#00FF00",          # lime
+        "#8B4513",          # saddle brown
         "#87CEFA",          # light sky blue
+        "#FF0000",          # red
         "#000080",          # navy
+        "#FF00FF",          # fuchsia
         "#0000FF",          # blue
+        "#008000",          # green
         "#4B0082",          # indigo
         "#6A5ACD",          # slate blue
-        "#9400D3",          # dark violet
-        "#800080",          # purple
-        "#FF00FF",          # fuchsia
         "#FF1493",          # deep pink
-        "#8B4513",          # saddle brown
+        "#800080",          # purple
         "#D2691E",          # chocolate
-        "#F4A460"           # sandy brown
+        "#00FFFF",          # cyan
+        "#F4A460",          # sandy brown
+        "#FFFF00"           # yellow
     ]
         
     fig, ax = plt.subplots()
@@ -83,10 +85,7 @@ def makePlot(koords, wk, clusters, centers, dimension1, dimension2):
         ax.scatter(x, y, s=50, c=colours[j%20], marker='^', edgecolors="grey")
         j+=1
 
-    plt.savefig("visual_dim" + str(dimension1) + "xdim" + str(dimension2) + ".jpg")
- 
-
-if __name__ == '__main__':
-    #koords, wk, clusters = input.createSet(True)
-    #makePlot(koords, wk, clusters) 
-    makePlots([(1,0,0), (0,1,0),(1,0.75,0.5),(3,2,2),(2,3,2),(0,1,2), (0,1.5,2)], [(0,0,0), (2,2,2), (0, 1.5, 1.5)], [0.5, 0.5, 0.9, 0.8, 0.8, 0.6, 0.9], [0,0,0,1,1,2,2])
+    name = "visual_dim" + str(dimension1) + "xdim" + str(dimension2) + ".jpg"
+    plt.savefig(name)
+    plt.close()
+    return name
