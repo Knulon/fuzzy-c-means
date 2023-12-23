@@ -76,11 +76,11 @@ def makePlot(koords, wk, clusters, centers, dimension1, dimension2):
        w = scaled_array[j]
        j+=1
 
-       ax.scatter(x, y, s=30, c=(colours[c%20], w))
+       ax.scatter(x, y, s=20, c=(colours[c%20]), alpha=w, marker='o', edgecolors='face')
 
     j = 0
     for x, y in centers:
-        ax.scatter(x, y, s=40, c=colours[j%20], marker='^', edgecolors="black")
+        ax.scatter(x, y, s=50, c=colours[j%20], marker='^', edgecolors="grey")
         j+=1
 
     plt.savefig("visual_dim" + str(dimension1) + "xdim" + str(dimension2) + ".jpg")
