@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import input
 
 # jede Dimension mit jeder darstellen (also alle Kombinationen in 2D)
 def makePlots(dataKoords, centerKoords, wk, clusters):
@@ -43,7 +42,7 @@ def makePlot(koords, wk, clusters, centers, dimension1, dimension2):
         else:
             scaled_array = [0.5 for val in wk]
 
-    # Farben fuer Cluster   (20 Farben, ab der 21. wieder oben anfangen) NUR MIT DIEEEESEN FARBEN!!!!111!!1!
+    # Farben fuer Cluster   (20 Farben, ab der 21. wieder oben anfangen) NUR MIT DIEEEESEN FARBEN!!!!111!!11ELF!
     colours = [
         "#6495ED",          # corn flower blue
         "#9400D3",          # dark violet
