@@ -29,9 +29,8 @@ def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 
     u /= u.sum(axis=1, keepdims=1)
     last_u = np.zeros_like(u)
     # https://stackoverflow.com/questions/43644320/how-to-make-numpy-array-column-sum-up-to-1
-
-    while np.linalg.norm(u - last_u) > epsilon:
-        print("--------------------")
+    iteration = 0
+    while np.linalg.norm(u - last_u) > epsilon and iteration < max_iteration:
         # print(np.linalg.norm(u - last_u))
         last_u = u
         u = np.zeros_like(last_u)
@@ -68,7 +67,8 @@ def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 
     print(v)
     #print(u)
     # return something
-    links = visualisieren(points, clusterNr, wahrscheinlichkeiten)
+    links = visualisieren(points, wahrscheinlichkeiten, clusterNr, v)
+    """
     print("clusternummern:")
     print(clusterNr)
     print("Wahrscheinlichkeiten:")
