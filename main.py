@@ -3,15 +3,23 @@ from sklearn.datasets import load_wine
 import random
 from visuals import *
 
-
-def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 for a, b in zip(x, y)])),
-                epsilon=0.0000001, init=None, max_iteration=100):
+""" function fuzzyCMeans
+    points:         2D numpy array with coordianates of points
+    cluster_count:  count of clusters
+    m:              fuzzy factor > 1 
+    metric:         distance metric as lambda expression
+    epsilon:        error value > 0 to terminate
+    init:           way of initializing the u matrix => currently not used (=random)
+    max_iterations: maximum count of possible iterations before terminating
+"""
+def fuzzyCMeans(points, cluster_count, m, metric=(lambda x, y: sum([(a - b) ** 2 for a, b in zip(x, y)])),
+                epsilon=0.001, init=None, max_iterations=100):
     n = len(points)
-    last_u = np.zeros([clusterCount, n])
+    v = np.zeros([cluster_count, len(points[0])])
+    u = np.zeros([cluster_count, n])
 
-    v = np.zeros([clusterCount, len(points[0])])
-    u = np.zeros([clusterCount, n])
-    for i in range(clusterCount):
+    # random initialize u matrix
+    for i in range(cluster_count):
         for j in range(n):
             u[i][j] = random.random()
 
@@ -20,12 +28,11 @@ def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 
     last_u = np.zeros_like(u)
 
     iteration = 0
-    while np.linalg.norm(u - last_u) > epsilon and iteration < max_iteration:
+    while np.linalg.norm(u - last_u) > epsilon and iteration < max_iterations:
         last_u = u
-        u = np.zeros_like(last_u)
 
         # calculating v
-        for i in range(clusterCount):
+        for i in range(cluster_count):
             sumUpper = 0
             sumLower = 0
 
@@ -36,29 +43,26 @@ def fuzzyCMeans(points, clusterCount, m, metrik=(lambda x, y: sum([(a - b) ** 2 
             v[i] = sumUpper / sumLower
 
         # calculating u
-        u = np.zeros([clusterCount, n])
-        for i in range(clusterCount):
+        u = np.zeros([cluster_count, n])
+        for i in range(cluster_count):
             for k in range(n):
-                dik = metrik(points[k], v[i])
+                dik = metric(points[k], v[i])
                 sum = 0
-                for j in range(clusterCount):
-                    sum += (dik / metrik(points[k], v[j])) ** (2 / m - 1)
+                for j in range(cluster_count):
+                    sum += (dik / metric(points[k], v[j])) ** (2 / m - 1)
                 u[i][k] = 1 / sum
         iteration += 1
 
-    clusterNr = np.argmax(u, axis=0)
-    wahrscheinlichkeiten = np.max(u, axis=0)
+    cluster_no = np.argmax(u, axis=0)
+    probabilities = np.max(u, axis=0)
 
-    links = makePlots(points, v,  wahrscheinlichkeiten, clusterNr)
-    return points, clusterNr, links
+    links = makePlots(points, v, probabilities, cluster_no)
+    return points, cluster_no, links
 
 
 # ---- Beispieltests ---- #
 
 if __name__ == '__main__':
-
-    wine_data = load_wine()
- 
     different_metrics = {
         "squared_eucledian": lambda x, y: sum([(a - b) ** 2 for a, b in zip(x, y)]),
         "eucledian": lambda x, y: sum([(a - b) ** 2 for a, b in zip(x, y)]) ** (1 / 2),
@@ -66,5 +70,8 @@ if __name__ == '__main__':
         "inverse_eucleadian": lambda x, y: 1 / (sum([(a - b) ** 2 for a, b in zip(x, y)]) ** (1 / 2))
     }
 
+    # example call of function
+    wine_data = load_wine()
     inData = np.array(wine_data.get("data"))
-    fuzzyCMeans(inData, clusterCount=3, m=1.1, epsilon=0.01)
+    # ATTENTION: Wine dataset has 13 Dimensions => many 13*12 pictures will be generated #
+    fuzzyCMeans(inData, cluster_count=3, m=1.1, epsilon=0.01)
