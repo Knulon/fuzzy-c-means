@@ -75,7 +75,7 @@ def makePlot(koords, wk, clusters, centers, dimension1, dimension2):
     ax.set_title("Fuzzy c-Means")
     ax.set_xlabel("Dimension " + str(dimension1), fontsize=10)
     ax.set_ylabel("Dimension " + str(dimension2), fontsize=10)
-
+    """
     j = 0
     for x, y in koords:
         c = clusters[j]
@@ -88,7 +88,12 @@ def makePlot(koords, wk, clusters, centers, dimension1, dimension2):
     for x, y in centers:
         ax.scatter(x, y, s=50, c=colours[j % 20], marker='^', edgecolors="grey")
         j += 1
+    """
+    colors = [colours[ind % 20] for ind in clusters]
 
+    ax.scatter([a[0] for a in koords], [a[1] for a in koords], s=20, c=colors, alpha=scaled_array, marker='o', edgecolors='face')
+    colors = [colours[ind % 20] for ind in range(len(centers))]
+    ax.scatter([a[0] for a in centers], [a[1] for a in centers], s=50, c=colors, marker='^', edgecolors="grey")
     name = "tmp/visual_dim" + str(dimension1) + "xdim" + str(dimension2) + ".jpg"
     plt.savefig(name)
     plt.close()
